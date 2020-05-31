@@ -3,8 +3,13 @@ const Order = require('../models/order');
 const Product = require('../models/product');
 
 exports.getAllOrders = (req, res, next) => {
+    let query={};
+    console.log(req.userData)
+    if (req.userData.role === 'customer'){
+        query.userId=req.userData.userId;
+    }
     Order
-        .find()
+        .find(query)
         .select('_id product quantity status')
         .populate('product', '_id name price')
         .populate('user', 'email')
