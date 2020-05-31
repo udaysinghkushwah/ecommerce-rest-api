@@ -11,6 +11,7 @@ router.post('/', checkAuth, OrdersController.createOneOrder);
 router.get('/:orderId', checkAuth, OrdersController.getOneOrder);
 
 router.patch('/:orderId', checkAuth, OrdersController.updateOneOrder);
+router.patch('/status/:orderId', checkAuth, OrdersController.orderStatusAction);
 
 router.delete('/:orderId', checkAuth, OrdersController.deleteOneOrder);
 

@@ -43,6 +43,7 @@ exports.logIn = (req, res, next) => {
             }
             email = user[0].email;
             userId = user[0]._id;
+            role =user[0].role;
             return bcrypt.compare(req.body.password, user[0].password);
         })
         .then(result => {

@@ -40,6 +40,7 @@ router.get('/:productId', checkAuth, ProductsController.getOneProduct);
 
 router.patch('/:productId', checkAuth,  ProductsController.updateOneProduct);
 
+
 router.delete('/:productId', checkAuth, ProductsController.deleteOneProduct);
 
 module.exports = router;

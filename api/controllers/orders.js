@@ -5,9 +5,9 @@ const Product = require('../models/product');
 exports.getAllOrders = (req, res, next) => {
     Order
         .find()
-        .select('_id product quantity')
+        .select('_id product quantity status')
         .populate('product', '_id name price')
-        .populate('user','email')
+        .populate('user', 'email')
         .exec()
         .then(orders => {
             res.status(200).json({
@@ -56,9 +56,9 @@ exports.getOneOrder = (req, res, next) => {
     const orderId = req.params.orderId;
     Order
         .findById(orderId)
-        .select('_id product quantity')
+        .select('_id product quantity status')
         .populate('product', '_id name price')
-        .populate('user','email')
+        .populate('user', 'email')
         .exec()
         .then(order => {
             return res.status(201).json(order);
@@ -84,6 +84,28 @@ exports.updateOneOrder = (req, res, next) => {
         });
 };
 
+exports.orderStatusAction = (req, res, next) => {
+    console.log(req.userData)
+    if (req.userData.role === 'seller') {
+        const orderId = req.params.orderId;
+        Order
+            .update({ _id: orderId }, { $set: req.body })
+            .exec()
+            .then(result => {
+                return res.status(200).json({
+                    message: `Order ${req.body.status} Successfully!`,
+                    result: result
+                });
+            })
+            .catch(error => {
+                next(error);
+            });
+    }
+    else {
+        next({message:"this action only allowed for seller"});
+    }
+};
+
 exports.deleteOneOrder = (req, res, next) => {
     const orderId = req.params.orderId;
     Order
@@ -105,7 +127,7 @@ function createOrder(req) {
         _id: mongoose.Types.ObjectId(),
         product: req.body.productId,
         quantity: req.body.quantity,
-        user:req.userData.userId,
-        status:req.body.status
+        user: req.userData.userId,
+        status: req.body.status
     });
 }
