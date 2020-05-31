@@ -17,7 +17,7 @@ exports.signUp = (req, res, next) => {
             throw error;
         })
         .then(hash => {
-            const user = createUser(req.body.email, hash);
+            const user = createUser(req.body.email, hash, req.body.role);
             return user.save();
         })
         .then(result => {
@@ -33,7 +33,7 @@ exports.signUp = (req, res, next) => {
 exports.logIn = (req, res, next) => {
     let email = undefined, userId = undefined;
     User
-        .find({ email: req.body.email })
+        .find({ email: req.body.email,role:req.body.role })
         .exec()
         .then(user => {
             if (user.length < 1) {
@@ -87,10 +87,11 @@ exports.deleteUser = (req, res, next) => {
         });
 };
 
-function createUser(email, hash) {
+function createUser(email, hash, role) {
     return new User({
         _id: new mongoose.Types.ObjectId(),
         email: email,
-        password: hash
+        password: hash,
+        role: role
     });
 }
