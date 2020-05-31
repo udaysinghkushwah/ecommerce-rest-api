@@ -7,6 +7,7 @@ exports.getAllOrders = (req, res, next) => {
         .find()
         .select('_id product quantity')
         .populate('product', '_id name price')
+        .populate('user','email')
         .exec()
         .then(orders => {
             res.status(200).json({
@@ -30,6 +31,7 @@ exports.createOneOrder = (req, res, next) => {
                     message: 'Product Not Found!'
                 });
             }
+            console.log(req.userData)
             return createOrder(req);
         })
         .then(order => {
@@ -56,6 +58,7 @@ exports.getOneOrder = (req, res, next) => {
         .findById(orderId)
         .select('_id product quantity')
         .populate('product', '_id name price')
+        .populate('user','email')
         .exec()
         .then(order => {
             return res.status(201).json(order);
@@ -101,6 +104,8 @@ function createOrder(req) {
     return new Order({
         _id: mongoose.Types.ObjectId(),
         product: req.body.productId,
-        quantity: req.body.quantity
+        quantity: req.body.quantity,
+        user:req.userData.userId,
+        status:req.body.status
     });
 }
